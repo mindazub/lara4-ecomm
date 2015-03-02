@@ -43,30 +43,36 @@
   </h2>
   <div class="categories btn-group">
     <button
-      type="button"
-      class="category btn btn-default active"
-    >
-      All
-    </button>
-    <button
-      type="button"
-      class="category btn btn-default"
-      ng-repeat="category in products.categories"
-    >
-      @{{ category.name }}
-    </button>
-  </div>
-  <div class="products">
-    <div
-      class="product media"
-      ng-repeat="product in products.products"
-    >
+    type="button"
+    class="category btn btn-default active"
+    ng-click="products.setCategory(null)"
+    ng-class="{ 'active' : products.category == null }"
+  >
+    All
+  </button>
+  <button
+    type="button"
+    class="category btn btn-default"
+    ng-repeat="category in products.categories"
+    ng-click="products.setCategory(category)"
+    ng-class="{ 'active' : products.category.id == category.id }"
+  >
+    @{{ category.name }}
+  </button>
+</div>
+<div class="products">
+  <div
+    class="product media"
+    ng-repeat="product in products.products | filter : products.filterByCategory"
+  >
       <button
-        type="button"
-        class="pull-left btn btn-default"
-      >
-        Add to basket
-      </button>
+  type="button"
+  class="pull-left btn btn-default"
+  ng-click="products.addToBasket(product)"
+>
+  Add to basket
+</button>
+
       <div class="media-body">
         <h4 class="media-heading">@{{ product.name }}</h4>
         <p>
@@ -78,77 +84,40 @@
 </div>
         
         <div class="col-md-4" ng-controller="basket">
-          <h2>
-            Basket
-          </h2>
-          <form class="basket">
-            <table class="table">
-              <tr class="product">
-                <td class="name">
-                  Product 1
-                </td>
-                <td class="quantity">
-                  <input
-                    class="quantity form-control col-md-2"
-                    type="number"
-                    value="1"
-                  />
-                </td>
-                <td class="product">
-                  9.99
-                </td>
-                <td class="product">
-                  <a
-                    class="remove glyphicon glyphicon-remove"
-                    href="#"
-                  ></a>
-                </td>
-              </tr>
-              <tr class="product">
-                <td class="name">
-                  Product 2
-                </td>
-                <td class="quantity">
-                  <input
-                    class="quantity form-control col-md-2"
-                    type="number"
-                    value="1"
-                  />
-                </td>
-                <td class="product">
-                  9.99
-                </td>
-                <td class="product">
-                  <a
-                    class="remove glyphicon glyphicon-remove"
-                    href="#"
-                  ></a>
-                </td>
-              </tr>
-              <tr class="product">
-                <td class="name">
-                  Product 3
-                </td>
-                <td class="quantity">
-                  <input
-                    class="quantity form-control col-md-2"
-                    type="number"
-                    value="1"
-                  />
-                </td>
-                <td class="product">
-                  9.99
-                </td>
-                <td class="product">
-                  <a
-                    class="remove glyphicon glyphicon-remove"
-                    href="#"
-                  ></a>
-                </td>
-              </tr>
-            </table>
-          </form>
-        </div>
+  <h2>
+    Basket
+  </h2>
+  <form class="basket">
+    <table class="table">
+      <tr
+        class="product"
+        ng-repeat="product in basket.products track by $index"
+      >
+        <td class="name">
+          @{{ product.name }}
+        </td>
+        <td class="quantity">
+          <input
+            class="quantity form-control col-md-2"
+            type="number"
+            ng-model="product.quantity"
+            ng-change="basket.update()"
+            min="1"
+          />
+        </td>
+        <td class="product">
+          @{{ product.total }}
+        </td>
+        <td class="product">
+          <a
+            class="remove glyphicon glyphicon-remove"
+            ng-click="basket.remove(product)"
+          ></a>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
       </div>
     </div>
     <script
